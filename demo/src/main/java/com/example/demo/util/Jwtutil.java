@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -29,5 +30,13 @@ public class Jwtutil {
         return username.equals(extractUsername(token)) && !isTokenExpired(token);
     }
 
+    private boolean isTokenExpired(String token){
+        return extractClaims(token).getExpiration().before(new Date());
+    }
+
+    @SuppressWarnings("deprecation")
+    private Claims extractClaims(String token) {
+        return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+    }
 
 }
